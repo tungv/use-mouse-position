@@ -18,12 +18,29 @@ function useY() {
   return useSyncExternalStore(subscribe, () => y);
 }
 
+const listeners = new Set<() => void>();
+
 function subscribe(callback: () => void) {
   function handleMouseMove(event: MouseEvent) {
     x = event.clientX;
     y = event.clientY;
-    callback();
+    requestAnimationFrame(() => {
+      for (const listener of listeners) {
+        listener();
+      }
+    });
   }
-  window.addEventListener("mousemove", handleMouseMove);
-  return () => window.removeEventListener("mousemove", handleMouseMove);
+
+  if (listeners.size === 0) {
+    window.addEventListener("mousemove", handleMouseMove);
+  }
+
+  listeners.add(callback);
+
+  return () => {
+    listeners.delete(callback);
+    if (listeners.size === 0) {
+      window.removeEventListener("mousemove", handleMouseMove);
+    }
+  };
 }
