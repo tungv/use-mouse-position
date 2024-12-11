@@ -4,10 +4,7 @@ let x = 0;
 let y = 0;
 
 export default function useMousePosition() {
-  return {
-    x: useX(),
-    y: useY(),
-  };
+  return [useX(), useY()] as const;
 }
 
 function useX() {

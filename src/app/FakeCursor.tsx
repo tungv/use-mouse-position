@@ -13,7 +13,7 @@ const useFakeCursorPresence = createGlobalPresence("FakeCursor", {
 });
 
 export default function FakeCursor() {
-  const { x, y } = useMousePosition();
+  const [x, y] = useMousePosition();
   useFakeCursorPresence();
   return (
     <div
